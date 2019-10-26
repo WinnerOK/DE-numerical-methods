@@ -113,6 +113,7 @@ class mywindow(QMainWindow):
             }
         except ValueError:
             self.notify_mistake("Some of input fields are empty.", None)
+            return
         ivp = {
             "x_0": inp['graph']['x_0'],
             "y_0": inp['graph']['y_0'],
@@ -130,6 +131,8 @@ class mywindow(QMainWindow):
     @pyqtSlot()
     def draw(self):
         input_data = self.get_input()
+        if input_data is None:
+            return
         self.clear_graph_checkbox()
         for name, color in self.plotter.plot(input_data):
             self.add_graph_checkbox(name, color)

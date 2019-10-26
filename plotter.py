@@ -11,9 +11,10 @@ from calculators.solution import Solution
 class PlotCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width // dpi, height // dpi), dpi=dpi)
-        self.graph_plot = fig.add_subplot(2, 1, 1)
-        self.error_plot = fig.add_subplot(2, 1, 2)
+        fig = Figure(figsize=(width // dpi, height // dpi), dpi=dpi, tight_layout=True)
+        self.graph_plot = fig.add_subplot(3, 1, 1)
+        self.error_plot = fig.add_subplot(3, 1, 2)
+        self.max_error_plot = fig.add_subplot(3, 1, 3)
 
         self.numerical_solutions = []  # type: List[Type[Solution]]
         self.numerical_function = None
@@ -23,6 +24,7 @@ class PlotCanvas(FigureCanvas):
 
         self.calculation_data = []  # type: List[Tuple[str, Iterable[Optional[float]]]]
         self.error_data = []  # type: List[Tuple[str, Iterable[Optional[float]]]]
+        self.max_error_data = []  # type: List[Tuple[str, Iterable[Optional[float]]]]
 
         self.x_0 = None  # type: Optional[float]
         self.y_0 = None  # type: Optional[float]
@@ -56,12 +58,22 @@ class PlotCanvas(FigureCanvas):
             n = self.n
         return solution.name, solution(self.x_0, self.y_0, self.x, n, function).get_data()
 
+    def calculate_local_error(self, numerical_points: List[Optional[float]],
+                              exact_points: List[Optional[float]]) -> List[Optional[float]]:
+        local_error_points = []
+        for i, j in zip(exact_points, numerical_points):
+            if i is not None and j is not None:
+                local_error_points.append(abs(i - j))
+            else:
+                local_error_points.append(None)
+        return local_error_points
+
     def calculate_maximum_local_error(self, numerical_points: List[Optional[float]],
                                       exact_points: List[Optional[float]]) -> Optional[float]:
         current_max = -1
-        for i, j in zip(exact_points, numerical_points):
-            if i is not None and j is not None:
-                current_max = max(current_max, abs(i - j))
+        for i in self.calculate_local_error(numerical_points, exact_points):
+            if i is not None:
+                current_max = max(current_max, i)
         return None if current_max == -1 else current_max
 
     def calculate(self):
@@ -70,14 +82,25 @@ class PlotCanvas(FigureCanvas):
             self.calculate_solution(solution, self.numerical_function)
             for solution in self.numerical_solutions
         ]
+
+        self.error_data = [
+            (
+                solution[0],
+                self.calculate_local_error(
+                    solution[1],
+                    exact_solution_calculation[1]
+                )
+            )
+            for solution in self.calculation_data
+        ]
         # noinspection PyTypeChecker
         self.calculation_data.append(exact_solution_calculation)
 
-        self.error_data.clear()
+        self.max_error_data.clear()
 
         for numerical_solution in self.numerical_solutions:
             # noinspection PyTypeChecker
-            self.error_data.append(
+            self.max_error_data.append(
                 (
                     numerical_solution.name,
                     [
@@ -109,15 +132,20 @@ class PlotCanvas(FigureCanvas):
     def plot_update(self):
         self.graph_plot.cla()
         self.error_plot.cla()
+        self.max_error_plot.cla()
 
         x_solution_plot = np.linspace(self.x_0, self.x, self.n + 1)
         x_error_plot = np.linspace(self.n_0_error, self.n_error, self.n_error - self.n_0_error + 1)
 
-        colors = []
+        for solution in self.max_error_data:
+            if self.is_visible[solution[0]]:
+                self.max_error_plot.plot(x_error_plot, solution[1], label=solution[0],
+                                         color=self.colors.get(solution[0], None))
 
         for solution in self.error_data:
             if self.is_visible[solution[0]]:
-                self.error_plot.plot(x_error_plot, solution[1], label=solution[0])
+                self.error_plot.plot(x_solution_plot, solution[1], label=solution[0],
+                                     color=self.colors.get(solution[0], None))
 
         for solution in self.calculation_data:
             if self.is_visible[solution[0]]:
@@ -127,19 +155,19 @@ class PlotCanvas(FigureCanvas):
                                              "o-", label=solution[0],
                                              color=self.colors.get(solution[0], None))[0].get_color()
                 })
-                # yield (
-                #     solution[0],
-                #     self.graph_plot.plot(x_solution_plot, solution[1], "o-", label=solution[0])[0].get_color()
-                # )
 
         self.graph_plot.set_title("Solution comparison")
         self.graph_plot.set_xlabel("x")
         self.graph_plot.set_ylabel("y")
-        self.graph_plot.legend()
+        self.graph_plot.legend(loc="upper left")
 
-        self.error_plot.set_title("Max local error comparison")
-        self.error_plot.set_xlabel("#intervals")
-        self.error_plot.set_ylabel("Max local error")
+        self.error_plot.set_title("Local error comparison")
+        self.error_plot.set_xlabel("x")
+        self.error_plot.set_ylabel("Local error")
+
+        self.max_error_plot.set_title("Max local error comparison")
+        self.max_error_plot.set_xlabel("#intervals")
+        self.max_error_plot.set_ylabel("Max local error")
         self.draw()
 
         return self.colors.items()

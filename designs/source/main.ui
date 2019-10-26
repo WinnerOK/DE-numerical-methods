@@ -41,7 +41,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Plot:</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -51,14 +51,7 @@
       <item>
        <widget class="QPushButton" name="solutions_Button">
         <property name="text">
-         <string>Solutions</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="error_Button">
-        <property name="text">
-         <string>Errors</string>
+         <string>Plot</string>
         </property>
        </widget>
       </item>
