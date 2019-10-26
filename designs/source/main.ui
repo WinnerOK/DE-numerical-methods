@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
+    <width>830</width>
     <height>491</height>
    </rect>
   </property>
@@ -340,7 +340,7 @@
          <string>An exact solution with explicit const</string>
         </property>
         <property name="text">
-         <string>x * (pow (y_0/x_0 + 1, x/x_0) - 1 )</string>
+         <string>x * exp(pow(log(y_0 / x_0 + 1), x / x_0) - 1)</string>
         </property>
        </widget>
       </item>
@@ -362,7 +362,7 @@
          <string>A function for numerical calculations</string>
         </property>
         <property name="text">
-         <string>(1+y/x)*log(1+y/x) + y/x</string>
+         <string>(1 + y / x) * log(1 + y / x) + y / x</string>
         </property>
        </widget>
       </item>

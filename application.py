@@ -49,8 +49,8 @@ class mywindow(QMainWindow):
         self.ui.y0_Input.setText("2")
         self.ui.x_Input.setText("6")
         self.ui.n_Input.setText("100")
-        self.ui.f_Input.setText("(1+y/x)*log(1+y/x) + y/x")
-        self.ui.y_exact_Input.setText("x * (pow (y_0/x_0 + 1, x/x_0) - 1 )")
+        self.ui.f_Input.setText("(1 + y / x) * log(1 + y / x) + y / x")
+        self.ui.y_exact_Input.setText("x * exp(pow(log(y_0 / x_0 + 1), x / x_0) - 1)")
 
     def add_graph_checkbox(self, method_name: str, color: str):
         tmp = QCheckBox(method_name)

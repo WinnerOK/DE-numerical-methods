@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(787, 491)
+        MainWindow.resize(830, 491)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -234,6 +234,6 @@ class Ui_MainWindow(object):
         self.y_exact_Label.setText(_translate("MainWindow", "y(x,x_0,y_0)"))
         self.f_Label.setText(_translate("MainWindow", "f(x,y)"))
         self.y_exact_Input.setToolTip(_translate("MainWindow", "An exact solution with explicit const"))
-        self.y_exact_Input.setText(_translate("MainWindow", "x * (pow (y_0/x_0 + 1, x/x_0) - 1 )"))
+        self.y_exact_Input.setText(_translate("MainWindow", "x * exp(pow(log(y_0 / x_0 + 1), x / x_0) - 1)"))
         self.f_Input.setToolTip(_translate("MainWindow", "A function for numerical calculations"))
-        self.f_Input.setText(_translate("MainWindow", "(1+y/x)*log(1+y/x) + y/x"))
+        self.f_Input.setText(_translate("MainWindow", "(1 + y / x) * log(1 + y / x) + y / x"))
