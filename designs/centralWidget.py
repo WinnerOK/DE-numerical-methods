@@ -234,6 +234,6 @@ class Ui_MainWindow(object):
         self.y_exact_Label.setText(_translate("MainWindow", "y(x,x_0,y_0)"))
         self.f_Label.setText(_translate("MainWindow", "f(x,y)"))
         self.y_exact_Input.setToolTip(_translate("MainWindow", "An exact solution with explicit const"))
-        self.y_exact_Input.setText(_translate("MainWindow", "x * exp(pow(log(y_0 / x_0 + 1), x / x_0) - 1)"))
+        self.y_exact_Input.setText(_translate("MainWindow", "x * (exp(log(pow(y_0 / x_0 + 1, x / x_0))) - 1)"))
         self.f_Input.setToolTip(_translate("MainWindow", "A function for numerical calculations"))
         self.f_Input.setText(_translate("MainWindow", "(1 + y / x) * log(1 + y / x) + y / x"))

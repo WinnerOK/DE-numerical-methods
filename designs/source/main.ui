@@ -340,7 +340,7 @@
          <string>An exact solution with explicit const</string>
         </property>
         <property name="text">
-         <string>x * exp(pow(log(y_0 / x_0 + 1), x / x_0) - 1)</string>
+         <string>x * (exp(log(pow(y_0 / x_0 + 1, x / x_0))) - 1)</string>
         </property>
        </widget>
       </item>
