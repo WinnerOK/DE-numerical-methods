@@ -125,8 +125,8 @@ class mywindow(QMainWindow):
                                               locals().update(ivp)
                                               )
 
-        self.validate_input(inp)
-        return inp
+        if self.validate_input(inp):
+            return inp
 
     @pyqtSlot()
     def draw(self):
