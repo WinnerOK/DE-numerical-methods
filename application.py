@@ -54,9 +54,9 @@ class mywindow(QMainWindow):
 
     def add_graph_checkbox(self, method_name: str, color: str):
         tmp = QCheckBox(method_name)
-        tmp.stateChanged.connect(self.debug)
         tmp.setStyleSheet("QCheckBox { color: " + color + "}")
         tmp.setChecked(True)
+        tmp.stateChanged.connect(self.update_plot)
         self.ui.checkbox_Layout.addWidget(tmp)
         self.graph_checkboxes[method_name] = tmp
 
@@ -135,8 +135,8 @@ class mywindow(QMainWindow):
             self.add_graph_checkbox(name, color)
 
     @pyqtSlot()
-    def debug(self):
-        print(self.sender().text(), self.sender().isChecked())
+    def update_plot(self):
+        self.plotter.change_visibility(self.sender().text(), self.sender().isChecked())
 
 
 app = QApplication([])

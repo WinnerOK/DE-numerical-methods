@@ -1,4 +1,4 @@
-from typing import Type, Callable, List, Tuple, Optional, Iterable
+from typing import Type, Callable, List, Tuple, Optional, Iterable, Dict
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -31,15 +31,20 @@ class PlotCanvas(FigureCanvas):
         self.n_error = None  # type: Optional[int]
         self.n = None  # type: Optional[int]
 
+        self.is_visible = {}  # type:Dict[str,bool]
+        self.colors = {}  # type: Dict[str, str]
+
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
         FigureCanvas.updateGeometry(self)
 
     def add_solution(self, solution: Type[Solution]) -> None:
         self.numerical_solutions.append(solution)
+        self.is_visible[solution.name] = True
 
     def add_exact_solution(self, reference_solution: Type[Solution]) -> None:
         self.exact_solution = reference_solution
+        self.is_visible[reference_solution.name] = True
 
     def set_functions(self, exact: Callable[[float], float], numerical: Callable[[float, float], float]):
         self.exact_function = exact
@@ -80,7 +85,8 @@ class PlotCanvas(FigureCanvas):
                             self.calculate_solution(numerical_solution, self.numerical_function, n)[1],
                             self.calculate_solution(self.exact_solution, self.exact_function, n)[1]
                         ) for n in range(self.n_0_error, self.n_error + 1)
-                    ]
+                    ],
+                    True
                 )
             )
 
@@ -98,17 +104,33 @@ class PlotCanvas(FigureCanvas):
 
         self.calculate()
 
+        return self.plot_update()
+
+    def plot_update(self):
         self.graph_plot.cla()
         self.error_plot.cla()
 
         x_solution_plot = np.linspace(self.x_0, self.x, self.n + 1)
         x_error_plot = np.linspace(self.n_0_error, self.n_error, self.n_error - self.n_0_error + 1)
 
+        colors = []
+
         for solution in self.error_data:
-            self.error_plot.plot(x_error_plot, solution[1], label=solution[0])
+            if self.is_visible[solution[0]]:
+                self.error_plot.plot(x_error_plot, solution[1], label=solution[0])
 
         for solution in self.calculation_data:
-            yield (solution[0], self.graph_plot.plot(x_solution_plot, solution[1], "o-", label=solution[0])[0].get_color())
+            if self.is_visible[solution[0]]:
+                self.colors.update({
+                    solution[0]:
+                        self.graph_plot.plot(x_solution_plot, solution[1],
+                                             "o-", label=solution[0],
+                                             color=self.colors.get(solution[0], None))[0].get_color()
+                })
+                # yield (
+                #     solution[0],
+                #     self.graph_plot.plot(x_solution_plot, solution[1], "o-", label=solution[0])[0].get_color()
+                # )
 
         self.graph_plot.set_title("Solution comparison")
         self.graph_plot.set_xlabel("x")
@@ -119,3 +141,9 @@ class PlotCanvas(FigureCanvas):
         self.error_plot.set_xlabel("#intervals")
         self.error_plot.set_ylabel("Max local error")
         self.draw()
+
+        return self.colors.items()
+
+    def change_visibility(self, graph_name: str, is_visible: bool):
+        self.is_visible[graph_name] = is_visible
+        self.plot_update()
