@@ -8,7 +8,7 @@ class Exact(Solution):
 
     def get_data(self) -> List[Optional[float]]:
         data = []
-        for _ in range(self.n):
+        for _ in range(self.n + 1):
             try:
                 data.append(self.func(self.x))
             except:

@@ -45,23 +45,44 @@ class PlotCanvas(FigureCanvas):
         self.exact_function = exact
         self.numerical_function = numerical
 
+    def calculate_solution(self, solution: Type[Solution], function: Callable, n: Optional[int] = None) \
+            -> Tuple[property, List[Optional[float]]]:
+        if n is None:
+            n = self.n
+        return solution.name, solution(self.x_0, self.y_0, self.x, n, function).get_data()
+
+    def calculate_maximum_local_error(self, numerical_points: List[Optional[float]],
+                                      exact_points: List[Optional[float]]) -> Optional[float]:
+        current_max = -1
+        for i, j in zip(exact_points, numerical_points):
+            if i is not None and j is not None:
+                current_max = max(current_max, abs(i - j))
+        return None if current_max == -1 else current_max
+
     def calculate(self):
-        exact_solution_points = self.exact_solution(self.x_0, self.y_0, self.x, self.n, self.exact_function).get_data()
+        exact_solution_calculation = self.calculate_solution(self.exact_solution, self.exact_function)
         self.calculation_data = [
-            (solution.name, solution(self.x_0, self.y_0, self.x, self.n, self.numerical_function).get_data())
+            self.calculate_solution(solution, self.numerical_function)
             for solution in self.numerical_solutions
         ]
+        # noinspection PyTypeChecker
+        self.calculation_data.append(exact_solution_calculation)
 
         self.error_data.clear()
-        for numerical_solution in self.calculation_data:
+
+        for numerical_solution in self.numerical_solutions:
             # noinspection PyTypeChecker
             self.error_data.append(
-                (numerical_solution[0],
-                 list(map(lambda i: abs(i[0] - i[1]), zip(exact_solution_points, numerical_solution[1]))))
+                (
+                    numerical_solution.name,
+                    [
+                        self.calculate_maximum_local_error(
+                            self.calculate_solution(numerical_solution, self.numerical_function, n)[1],
+                            self.calculate_solution(self.exact_solution, self.exact_function, n)[1]
+                        ) for n in range(self.n_0_error, self.n_error + 1)
+                    ]
+                )
             )
-
-        # noinspection PyTypeChecker
-        self.calculation_data.append(('exact', exact_solution_points))
 
     def parse_input(self, data: dict):
         self.set_functions(data['graph']["y"], data['graph']["f"])
@@ -80,11 +101,21 @@ class PlotCanvas(FigureCanvas):
         self.graph_plot.cla()
         self.error_plot.cla()
 
-        x_solution_plot = np.linspace(self.x_0, self.x, self.n)
-        x_error_plot = np.linspace(self.x_0, self.x)
+        x_solution_plot = np.linspace(self.x_0, self.x, self.n + 1)
+        x_error_plot = np.linspace(self.n_0_error, self.n_error, self.n_error - self.n_0_error + 1)
+
+        for solution in self.error_data:
+            self.error_plot.plot(x_error_plot, solution[1], label=solution[0])
 
         for solution in self.calculation_data:
-            yield (solution[0], self.graph_plot.plot(x_solution_plot, solution[1], label=solution[0])[0].get_color())
+            yield (solution[0], self.graph_plot.plot(x_solution_plot, solution[1], "o-", label=solution[0])[0].get_color())
 
+        self.graph_plot.set_title("Solution comparison")
+        self.graph_plot.set_xlabel("x")
+        self.graph_plot.set_ylabel("y")
         self.graph_plot.legend()
+
+        self.error_plot.set_title("Max local error comparison")
+        self.error_plot.set_xlabel("#intervals")
+        self.error_plot.set_ylabel("Max local error")
         self.draw()

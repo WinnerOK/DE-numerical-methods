@@ -55,9 +55,10 @@ class mywindow(QMainWindow):
     def add_graph_checkbox(self, method_name: str, color: str):
         tmp = QCheckBox(method_name)
         tmp.stateChanged.connect(self.debug)
+        tmp.setStyleSheet("QCheckBox { color: " + color + "}")
+        tmp.setChecked(True)
         self.ui.checkbox_Layout.addWidget(tmp)
         self.graph_checkboxes[method_name] = tmp
-        self.graph_checkboxes[method_name].setStyleSheet("QCheckBox { color: " + color + "}")
 
     def clear_graph_checkbox(self):
         for i in reversed(range(1, self.ui.checkbox_Layout.count())):
@@ -128,10 +129,9 @@ class mywindow(QMainWindow):
 
     @pyqtSlot()
     def draw(self):
-        # print(self.validate_input(), self.sender().objectName())
-        input = self.get_input()
+        input_data = self.get_input()
         self.clear_graph_checkbox()
-        for name, color in self.plotter.plot(input):
+        for name, color in self.plotter.plot(input_data):
             self.add_graph_checkbox(name, color)
 
     @pyqtSlot()
