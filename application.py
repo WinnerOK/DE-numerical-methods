@@ -82,6 +82,14 @@ class mywindow(QMainWindow):
             self.notify_mistake("N<sub>0</sub> is greater than N", self.ui.n_error_Input)
             return False
 
+        if data['error']['n_0'] <= 0:
+            self.notify_mistake("N<sub>0</sub> must be greater than 0", self.ui.n0_error_Input)
+            return False
+
+        if data['graph']['n'] <= 0:
+            self.notify_mistake("N must be greater than 0", self.ui.n_Input)
+            return False
+
         x_0 = data['graph']['x_0']
         y_0 = data['graph']['y_0']
         y = data['graph']['y']
