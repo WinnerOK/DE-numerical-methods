@@ -32,6 +32,9 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="toolTip">
+    <string/>
+   </property>
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
@@ -84,6 +87,9 @@
             <width>75</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string/>
           </property>
           <property name="text">
            <string>1</string>
@@ -330,6 +336,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>An exact solution with explicit const</string>
+        </property>
         <property name="text">
          <string>x * (pow (y_0/x_0 + 1, x/x_0) - 1 )</string>
         </property>
@@ -348,6 +357,9 @@
           <width>16777215</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>A function for numerical calculations</string>
         </property>
         <property name="text">
          <string>(1+y/x)*log(1+y/x) + y/x</string>
