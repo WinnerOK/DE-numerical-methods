@@ -152,7 +152,7 @@ class PlotCanvas(FigureCanvas):
                 self.colors.update({
                     solution[0]:
                         self.graph_plot.plot(x_solution_plot, solution[1],
-                                             "o-", label=solution[0],
+                                             label=solution[0],
                                              color=self.colors.get(solution[0], None))[0].get_color()
                 })
 
