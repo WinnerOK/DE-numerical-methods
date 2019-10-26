@@ -10,6 +10,8 @@ class Solution(ABC):
         self.n = n
         self.step = (x - x_0) / n
         self.func = func
+        # TODO Может сделать здесь self.data, и метод,
+        #  который будет заполнять его до конца, если в numerical встретился None?
 
     def calculate(self, x: float, y: float) -> Optional[float]:
         try:

@@ -8,8 +8,13 @@ class Euler(Solution):
 
     def get_data(self) -> List[Optional[float]]:
         data = []
-        for _ in range(self.n + 1):
+        for i in range(self.n + 1):
             data.append(self.y)
             self.x += self.step
-            self.y += self.step * self.calculate(self.x, self.y)
+            try:
+                self.y += self.step * self.calculate(self.x, self.y)
+            except:
+                data.extend([None] * (self.n - i))
+                break
+                # return data
         return data
