@@ -11,9 +11,9 @@ from plotter import PlotCanvas
 EPS = 1e-5
 
 
-class mywindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self, plotter: PlotCanvas):
-        super(mywindow, self).__init__()
+        super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.plotter = plotter
         self.setup_ui()

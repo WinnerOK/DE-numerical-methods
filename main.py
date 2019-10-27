@@ -1,6 +1,6 @@
 from sys import exit
 
-from application import app, mywindow
+from application import app, MainWindow
 from plotter import PlotCanvas
 import calculators
 
@@ -10,7 +10,7 @@ plot_canvas.add_solution(calculators.Euler)
 plot_canvas.add_solution(calculators.ImprovedEuler)
 plot_canvas.add_solution(calculators.RungeKutta)
 
-application = mywindow(plotter=plot_canvas)
+application = MainWindow(plotter=plot_canvas)
 application.showMaximized()
 
 
