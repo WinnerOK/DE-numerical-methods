@@ -12,10 +12,10 @@ EPS = 1e-5
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, plotter: PlotCanvas):
+    def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
-        self.plotter = plotter
+        self.plotter = PlotCanvas()
         self.setup_ui()
         self.graph_checkboxes = {}
 
