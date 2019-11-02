@@ -60,10 +60,10 @@ class PlotCanvas(FigureCanvas):
 
     def __calculate_local_error(self, numerical_points: List[Optional[float]],
                                 exact_points: List[Optional[float]]) -> List[Optional[float]]:
-        local_error_points = []
-        for i, j in zip(exact_points, numerical_points):
+        local_error_points = [0]
+        for i, j in zip(exact_points[1:], numerical_points[1:]):
             if i is not None and j is not None:
-                local_error_points.append(abs(i - j))
+                local_error_points.append(abs(i - j) - local_error_points[-1])
             else:
                 local_error_points.append(None)
         return local_error_points
