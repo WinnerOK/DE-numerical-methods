@@ -7,7 +7,6 @@ import numpy as np
 
 from calculators.solution import Solution
 
-
 class PlotCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -168,7 +167,15 @@ class PlotCanvas(FigureCanvas):
         self.__max_error_plot.set_ylabel("Max local error")
         self.draw()
 
-        return self.colors.items()
+        metadata = OrderedDict()
+
+        for k,v in self.colors.items():
+            metadata.setdefault(k, []).append(v)
+
+        for k,v in self.is_visible.items():
+            metadata.setdefault(k, []).append(v)
+
+        return metadata.items()
 
     def change_visibility(self, graph_name: str, is_visible: bool):
         self.is_visible[graph_name] = is_visible
