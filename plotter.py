@@ -7,6 +7,7 @@ import numpy as np
 
 from calculators.solution import Solution
 
+
 class PlotCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -58,19 +59,22 @@ class PlotCanvas(FigureCanvas):
         return solution.name, solution(self.__x_0, self.__y_0, self.__x, n, function).get_data()
 
     def __calculate_local_error(self, numerical_points: List[Optional[float]],
-                                exact_points: List[Optional[float]]) -> List[Optional[float]]:
+                                exact_points: List[Optional[float]], calculate_local=True) -> List[Optional[float]]:
         local_error_points = [0]
         for i, j in zip(exact_points[1:], numerical_points[1:]):
             if i is not None and j is not None:
-                local_error_points.append(abs(i - j) - local_error_points[-1])
+                error = abs(i - j)
+                if calculate_local:
+                    error -= local_error_points[-1]
+                local_error_points.append(error)
             else:
                 local_error_points.append(None)
         return local_error_points
 
     def __calculate_maximum_local_error(self, numerical_points: List[Optional[float]],
-                                        exact_points: List[Optional[float]]) -> Optional[float]:
+                                        exact_points: List[Optional[float]], calculate_local=True) -> Optional[float]:
         current_max = -1
-        for i in self.__calculate_local_error(numerical_points, exact_points):
+        for i in self.__calculate_local_error(numerical_points, exact_points, calculate_local):
             if i is not None:
                 current_max = max(current_max, i)
         return None if current_max == -1 else current_max
@@ -104,8 +108,8 @@ class PlotCanvas(FigureCanvas):
                 d.setdefault(numerical_solution.name, []).append(
                     self.__calculate_maximum_local_error(
                         self.__calculate_solution(numerical_solution, self.__numerical_function, n)[1],
-                        exact_solution_points
-
+                        exact_solution_points,
+                        calculate_local=False
                     )
                 )
         self.__max_error_data = list(d.items())
@@ -169,10 +173,10 @@ class PlotCanvas(FigureCanvas):
 
         metadata = OrderedDict()
 
-        for k,v in self.colors.items():
+        for k, v in self.colors.items():
             metadata.setdefault(k, []).append(v)
 
-        for k,v in self.is_visible.items():
+        for k, v in self.is_visible.items():
             metadata.setdefault(k, []).append(v)
 
         return metadata.items()
