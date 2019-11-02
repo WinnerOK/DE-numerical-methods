@@ -408,6 +408,20 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>x0_Input</tabstop>
+  <tabstop>y0_Input</tabstop>
+  <tabstop>n_Input</tabstop>
+  <tabstop>x_Input</tabstop>
+  <tabstop>f_Input</tabstop>
+  <tabstop>y_exact_Input</tabstop>
+  <tabstop>n0_error_Input</tabstop>
+  <tabstop>n_error_Input</tabstop>
+  <tabstop>solutions_Button</tabstop>
+  <tabstop>clear_error_Button</tabstop>
+  <tabstop>clear_input_Button</tabstop>
+  <tabstop>reset_input_Button</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -517,8 +531,8 @@
      <y>468</y>
     </hint>
     <hint type="destinationlabel">
-     <x>641</x>
-     <y>405</y>
+     <x>721</x>
+     <y>417</y>
     </hint>
    </hints>
   </connection>
@@ -533,8 +547,8 @@
      <y>468</y>
     </hint>
     <hint type="destinationlabel">
-     <x>641</x>
-     <y>436</y>
+     <x>721</x>
+     <y>448</y>
     </hint>
    </hints>
   </connection>

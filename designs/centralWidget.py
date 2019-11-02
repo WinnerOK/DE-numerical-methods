@@ -204,6 +204,17 @@ class Ui_MainWindow(object):
         self.clear_error_Button.clicked.connect(self.n0_error_Input.clear)
         self.clear_error_Button.clicked.connect(self.n_error_Input.clear)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.x0_Input, self.y0_Input)
+        MainWindow.setTabOrder(self.y0_Input, self.n_Input)
+        MainWindow.setTabOrder(self.n_Input, self.x_Input)
+        MainWindow.setTabOrder(self.x_Input, self.f_Input)
+        MainWindow.setTabOrder(self.f_Input, self.y_exact_Input)
+        MainWindow.setTabOrder(self.y_exact_Input, self.n0_error_Input)
+        MainWindow.setTabOrder(self.n0_error_Input, self.n_error_Input)
+        MainWindow.setTabOrder(self.n_error_Input, self.solutions_Button)
+        MainWindow.setTabOrder(self.solutions_Button, self.clear_error_Button)
+        MainWindow.setTabOrder(self.clear_error_Button, self.clear_input_Button)
+        MainWindow.setTabOrder(self.clear_input_Button, self.reset_input_Button)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
