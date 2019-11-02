@@ -242,7 +242,7 @@ class Ui_MainWindow(object):
         self.x_Input.setToolTip(_translate("MainWindow", "A rational number greater than x<sub>0</sub>"))
         self.x_Input.setText(_translate("MainWindow", "6"))
         self.x0_Label.setText(_translate("MainWindow", "x<sub>0</sub>"))
-        self.y_exact_Label.setText(_translate("MainWindow", "y(x,x_0,y_0)"))
+        self.y_exact_Label.setText(_translate("MainWindow", "y(x,x<sub>0</sub>,y<sub>0</sub>)"))
         self.f_Label.setText(_translate("MainWindow", "f(x,y)"))
         self.y_exact_Input.setToolTip(_translate("MainWindow", "An exact solution with explicit const"))
         self.y_exact_Input.setText(_translate("MainWindow", "x * (exp(log(pow(y_0 / x_0 + 1, x / x_0))) - 1)"))
