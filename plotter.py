@@ -44,12 +44,12 @@ class PlotCanvas(FigureCanvas):
         self.__numerical_solutions.append(solution)
         self.is_visible[solution.name] = True
 
-    def add_exact_solution(self, reference_solution: Type[Solution]) -> None:
-        self.__exact_solution = reference_solution
-        self.is_visible[reference_solution.name] = True
+    def add_exact_solution(self, exact_solution: Type[Solution]) -> None:
+        self.__exact_solution = exact_solution
+        self.is_visible[exact_solution.name] = True
 
-    def set_functions(self, exact: Callable[[float], float], numerical: Callable[[float, float], float]):
-        self.__exact_function = exact
+    def set_functions(self, exact_function: Callable[[float], float], numerical: Callable[[float, float], float]):
+        self.__exact_function = exact_function
         self.__numerical_function = numerical
 
     def __calculate_solution(self, solution: Type[Solution], function: Callable, n: Optional[int] = None) \

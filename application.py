@@ -1,7 +1,7 @@
-from math import *
-from typing import Optional
+from math import *  # Need calculate any functions f'(x,y) and f(x)
+from typing import Optional, Dict
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QWidget, QCheckBox, QLineEdit
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QCheckBox, QLineEdit
 from PyQt5.QtCore import QRegularExpression, pyqtSlot
 from PyQt5.QtGui import QRegularExpressionValidator
 
@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.__ui = Ui_MainWindow()
         self.plotter = PlotCanvas()
         self.__setup_ui()
-        self.__graph_checkboxes = {}
+        self.__graph_checkboxes = {}  # checkboxes of plotted graphs
 
     def __setup_ui(self):
         self.__ui.setupUi(self)
@@ -42,9 +42,8 @@ class MainWindow(QMainWindow):
     def __setup_buttons(self):
         self.__ui.reset_input_Button.clicked.connect(self.reset_input)
         self.__ui.solutions_Button.clicked.connect(self.draw)
-        # self.ui.error_Button.clicked.connect.(drawing function)
 
-    def reset_input(self):
+    def reset_input(self):  # resetting input for a given IVP
         self.__ui.x0_Input.setText("1")
         self.__ui.y0_Input.setText("2")
         self.__ui.x_Input.setText("6")
@@ -52,20 +51,23 @@ class MainWindow(QMainWindow):
         self.__ui.f_Input.setText("(1 + y / x) * log(1 + y / x) + y / x")
         self.__ui.y_exact_Input.setText("x * (exp(log(pow(y_0 / x_0 + 1, x / x_0))) - 1)")
 
-    def __add_graph_checkbox(self, method_name: str, color: str):
+    def __add_graph_checkbox(self, method_name: str, color: str):  # add a checkbox for a plotted graph
         tmp = QCheckBox(method_name)
-        tmp.setStyleSheet("QCheckBox { color: " + color + "}")
+        tmp.setStyleSheet("QCheckBox { color: " + color + "}")  # Setting a color to a checkbox label
         tmp.setChecked(True)
         tmp.stateChanged.connect(self.update_plot)
         self.__ui.checkbox_Layout.addWidget(tmp)
         self.__graph_checkboxes[method_name] = tmp
 
-    def clear_graph_checkbox(self):
+    def clear_graph_checkbox(self):  # remove all checkboxes
+        # This function doesn't do any helpful work in terms of this assignment, but in general in might be needed
+        # if solutions are being added/removed during the runtime
         for i in reversed(range(1, self.__ui.checkbox_Layout.count())):
-            self.__ui.checkbox_Layout.itemAt(i).widget().setParent(None)
+            # Remove in reverse order in order to preserve a layout for future checkboxes
+            self.__ui.checkbox_Layout.itemAt(i).widget().setParent(None)  # Widgets without parent will be deleted by gc
         self.__graph_checkboxes.clear()
 
-    def __notify_mistake(self, message: str, line_edit: Optional[QLineEdit]):
+    def __notify_mistake(self, message: str, line_edit: Optional[QLineEdit]):  # Notify user about an input mistake
         QMessageBox.warning(self, 'Invalid input', message, QMessageBox.Ok,
                             QMessageBox.Ok)
         if line_edit is not None:
@@ -73,7 +75,6 @@ class MainWindow(QMainWindow):
             line_edit.selectAll()
 
     def __validate_input(self, data: dict):
-        # data = self.get_input()
         if data['graph']['x_0'] > data['graph']['x']:
             self.__notify_mistake("X<sub>0</sub> is greater than X", self.__ui.x_Input)
             return False
@@ -99,12 +100,13 @@ class MainWindow(QMainWindow):
                 self.__notify_mistake("Given exact solution does not correspond to the IVP", self.__ui.y_exact_Input)
                 return False
         except Exception as e:
-            self.__notify_mistake(f"An error occured while parsing the exact solution:\n\"{e}\"", self.__ui.y_exact_Input)
+            self.__notify_mistake(f"An error occurred while parsing the exact solution:\n\"{e}\"",
+                                  self.__ui.y_exact_Input)
             return False
 
         return True
 
-    def get_input(self):
+    def get_input(self) -> Optional[Dict]:
         try:
             inp = {
                 "graph": {
@@ -140,7 +142,7 @@ class MainWindow(QMainWindow):
     def draw(self):
         input_data = self.get_input()
         if input_data is None:
-            return
+            return  # Input is invalid
         self.clear_graph_checkbox()
         for name, color in self.plotter.plot(input_data):
             self.__add_graph_checkbox(name, color)

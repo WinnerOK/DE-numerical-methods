@@ -11,5 +11,4 @@ application.plotter.add_solution(calculators.RungeKutta)
 
 application.showMaximized()
 
-
 exit(app.exec())
