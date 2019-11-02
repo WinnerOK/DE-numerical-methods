@@ -10,13 +10,11 @@ class Solution(ABC):
         self.n = n
         self.step = (x - x_0) / n
         self.func = func
-        # TODO Может сделать здесь self.data, и метод,
-        #  который будет заполнять его до конца, если в numerical встретился None?
 
     def calculate(self, x: float, y: float) -> Optional[float]:
         try:
             return self.func(x, y)
-        except:
+        except:  # Catching Arithmetical and Domain errors
             return None
 
     @property
@@ -25,5 +23,16 @@ class Solution(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_next(self) -> Optional[float]:
+        raise NotImplementedError
+
     def get_data(self) -> List[Optional[float]]:
-        pass
+        data = [self.y]
+        for i in range(self.n):
+            try:
+                data.append(self.get_next())
+            except:  # if numerical method got itself into None values, it wouldn't be able to calculate further
+                data.extend([None] * (self.n - i))
+                break
+            self.x += self.step
+        return data

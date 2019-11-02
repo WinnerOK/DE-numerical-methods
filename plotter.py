@@ -1,8 +1,8 @@
 from typing import Type, Callable, List, Tuple, Optional, Iterable, Dict
+from collections import OrderedDict
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 import numpy as np
 
 from calculators.solution import Solution
@@ -96,22 +96,20 @@ class PlotCanvas(FigureCanvas):
         # noinspection PyTypeChecker
         self.__calculation_data.append(exact_solution_calculation)
 
-        self.__max_error_data.clear()
+        d = OrderedDict()
 
-        for numerical_solution in self.__numerical_solutions:
-            # noinspection PyTypeChecker
-            self.__max_error_data.append(
-                (
-                    numerical_solution.name,
-                    [
-                        self.__calculate_maximum_local_error(
-                            self.__calculate_solution(numerical_solution, self.__numerical_function, n)[1],
-                            self.__calculate_solution(self.__exact_solution, self.__exact_function, n)[1]
-                        ) for n in range(self.__n_0_error, self.__n_error + 1)
-                    ],
-                    True
+        for n in range(self.__n_0_error, self.__n_error + 1):
+            exact_solution_points = self.__calculate_solution(self.__exact_solution, self.__exact_function, n)[1]
+            for numerical_solution in self.__numerical_solutions:
+                # noinspection PyTypeChecker
+                d.setdefault(numerical_solution.name, []).append(
+                    self.__calculate_maximum_local_error(
+                        self.__calculate_solution(numerical_solution, self.__numerical_function, n)[1],
+                        exact_solution_points
+
+                    )
                 )
-            )
+        self.__max_error_data = list(d.items())
 
     def __parse_input(self, data: dict):
         self.set_functions(data['graph']["y"], data['graph']["f"])
