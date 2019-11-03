@@ -33,8 +33,8 @@ class PlotCanvas(FigureCanvas):
         self.__n_error = None  # type: Optional[int]
         self.__n = None  # type: Optional[int]
 
-        self.is_visible = {}  # type:Dict[str,bool]
-        self.colors = {}  # type: Dict[str, str]
+        self.__is_visible = {}  # type:Dict[str,bool]
+        self.__colors = {}  # type: Dict[str, str]
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
@@ -42,11 +42,11 @@ class PlotCanvas(FigureCanvas):
 
     def add_solution(self, solution: Type[Solution]) -> None:
         self.__numerical_solutions.append(solution)
-        self.is_visible[solution.name] = True
+        self.__is_visible[solution.name] = True
 
     def add_exact_solution(self, exact_solution: Type[Solution]) -> None:
         self.__exact_solution = exact_solution
-        self.is_visible[exact_solution.name] = True
+        self.__is_visible[exact_solution.name] = True
 
     def set_functions(self, exact_function: Callable[[float], float], numerical: Callable[[float, float], float]):
         self.__exact_function = exact_function
@@ -139,22 +139,22 @@ class PlotCanvas(FigureCanvas):
         x_error_plot = np.linspace(self.__n_0_error, self.__n_error, self.__n_error - self.__n_0_error + 1)
 
         for solution in self.__max_error_data:
-            if self.is_visible[solution[0]]:
+            if self.__is_visible[solution[0]]:
                 self.__max_error_plot.plot(x_error_plot, solution[1], label=solution[0],
-                                           color=self.colors.get(solution[0], None))
+                                           color=self.__colors.get(solution[0], None))
 
         for solution in self.__error_data:
-            if self.is_visible[solution[0]]:
+            if self.__is_visible[solution[0]]:
                 self.__error_plot.plot(x_solution_plot, solution[1], label=solution[0],
-                                       color=self.colors.get(solution[0], None))
+                                       color=self.__colors.get(solution[0], None))
 
         for solution in self.__calculation_data:
-            if self.is_visible[solution[0]]:
-                self.colors.update({
+            if self.__is_visible[solution[0]]:
+                self.__colors.update({
                     solution[0]:
                         self.__graph_plot.plot(x_solution_plot, solution[1],
                                                label=solution[0],
-                                               color=self.colors.get(solution[0], None))[0].get_color()
+                                               color=self.__colors.get(solution[0], None))[0].get_color()
                 })
 
         self.__graph_plot.set_title("Solution comparison")
@@ -173,14 +173,14 @@ class PlotCanvas(FigureCanvas):
 
         metadata = OrderedDict()
 
-        for k, v in self.colors.items():
+        for k, v in self.__colors.items():
             metadata.setdefault(k, []).append(v)
 
-        for k, v in self.is_visible.items():
+        for k, v in self.__is_visible.items():
             metadata.setdefault(k, []).append(v)
 
         return metadata.items()
 
     def change_visibility(self, graph_name: str, is_visible: bool):
-        self.is_visible[graph_name] = is_visible
+        self.__is_visible[graph_name] = is_visible
         self.__plot_update()
