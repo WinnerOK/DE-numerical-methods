@@ -302,7 +302,7 @@
       <item row="1" column="4">
        <widget class="QLabel" name="y_exact_Label">
         <property name="text">
-         <string>y(x,x_0,y_0)</string>
+         <string>y(x,x&lt;sub&gt;0&lt;/sub&gt;,y&lt;sub&gt;0&lt;/sub&gt;)</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

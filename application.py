@@ -6,16 +6,16 @@ from PyQt5.QtCore import QRegularExpression, pyqtSlot
 from PyQt5.QtGui import QRegularExpressionValidator
 
 from designs.centralWidget import Ui_MainWindow
-from plotter import PlotCanvas
+from plotter import Plotter
 
 EPS = 1e-5
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, plotter: Plotter):
         super(MainWindow, self).__init__()
         self.__ui = Ui_MainWindow()
-        self.plotter = PlotCanvas()
+        self.plotter = plotter
         self.__setup_ui()
         self.__graph_checkboxes = {}  # checkboxes of plotted graphs
 
@@ -51,10 +51,11 @@ class MainWindow(QMainWindow):
         self.__ui.f_Input.setText("(1 + y / x) * log(1 + y / x) + y / x")
         self.__ui.y_exact_Input.setText("x * (exp(log(pow(y_0 / x_0 + 1, x / x_0))) - 1)")
 
-    def __add_graph_checkbox(self, method_name: str, color: str):  # add a checkbox for a plotted graph
+    def __add_graph_checkbox(self, method_name: str, color: str,
+                             is_checked: bool):  # add a checkbox for a plotted graph
         tmp = QCheckBox(method_name)
         tmp.setStyleSheet("QCheckBox { color: " + color + "}")  # Setting a color to a checkbox label
-        tmp.setChecked(True)
+        tmp.setChecked(is_checked)
         tmp.stateChanged.connect(self.update_plot)
         self.__ui.checkbox_Layout.addWidget(tmp)
         self.__graph_checkboxes[method_name] = tmp
@@ -144,8 +145,8 @@ class MainWindow(QMainWindow):
         if input_data is None:
             return  # Input is invalid
         self.clear_graph_checkbox()
-        for name, color in self.plotter.plot(input_data):
-            self.__add_graph_checkbox(name, color)
+        for name, metadata in self.plotter.plot(input_data):
+            self.__add_graph_checkbox(name, *metadata)
 
     @pyqtSlot()
     def update_plot(self):
