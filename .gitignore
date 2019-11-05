@@ -3,6 +3,8 @@
 # Edit at https://www.gitignore.io/?templates=pycharm+all
 
 __pycache__/
+*.spec
+build/*
 
 ### PyCharm+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
