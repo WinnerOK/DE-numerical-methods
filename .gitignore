@@ -5,6 +5,7 @@
 __pycache__/
 *.spec
 build/*
+dist/*
 
 ### PyCharm+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
