@@ -60,12 +60,12 @@ class PlotCanvas(FigureCanvas, Plotter):  # Can't combine Plotter and Figure Can
         return solution.name, solution(self.__x_0, self.__y_0, self.__x, n, function).get_data()
 
     def __calculate_local_error(self, numerical_points: List[Optional[float]],
-                                exact_points: List[Optional[float]], calculate_local=True) -> List[Optional[float]]:
+                                exact_points: List[Optional[float]], calculate_truncation=False) -> List[Optional[float]]:
         local_error_points = [0]
         for i, j in zip(exact_points[1:], numerical_points[1:]):
             if i is not None and j is not None:
                 error = abs(i - j)
-                if calculate_local:
+                if calculate_truncation:
                     error -= local_error_points[-1]
                 local_error_points.append(error)
             else:
@@ -109,8 +109,7 @@ class PlotCanvas(FigureCanvas, Plotter):  # Can't combine Plotter and Figure Can
                 d.setdefault(numerical_solution.name, []).append(
                     self.__calculate_maximum_local_error(
                         self.__calculate_solution(numerical_solution, self.__numerical_function, n)[1],
-                        exact_solution_points,
-                        calculate_local=False
+                        exact_solution_points
                     )
                 )
         self.__max_error_data = list(d.items())
