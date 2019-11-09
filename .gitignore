@@ -3,6 +3,9 @@
 # Edit at https://www.gitignore.io/?templates=pycharm+all
 
 __pycache__/
+*.spec
+build/*
+dist/*
 
 *.spec
 build/*
